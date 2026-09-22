@@ -60,7 +60,7 @@ class PasswortTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Abc1defg", "A1s2d3f4", "Abcdef1g"})
+    @ValueSource(strings = {"Abc1defg!", "A1s2d3f4{", "Abcdef1g)"})
     void isValidPassword_expectTrue(String password) {
         assertTrue(Passwort.isValid(password));
     }

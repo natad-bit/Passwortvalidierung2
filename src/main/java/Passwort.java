@@ -1,5 +1,4 @@
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 public class Passwort {
     public static final Set<String> COMMON_PASSWORDS = Set.of(
@@ -33,9 +32,27 @@ public class Passwort {
 
     public static final int MINIMUM_CHARACTERS = 8;
 
+    public static final String REASON_MIN_LENGTH = "Password should be more than " + MINIMUM_CHARACTERS + " characters";
+    public static final String REASON_DIGIT = "Password should contain minimum one digit";
+    public static final String REASON_CASE = "Password should contain upper and lower case letters";
+    public static final String REASON_NOT_COMMON = "Password shouldn't be common";
+    public static final String REASON_SPECIAL_CHARACTERS = "Password should contain at least one special characters";
+
+    public static List<String> ValidationResult = new ArrayList<>();
 
     public static void main(String[] args) {
-        System.out.println("Enter your passwort:");
+        Scanner scanner = new Scanner(System.in);
+        boolean isValid;
+        do {
+            System.out.println("Enter your password:");
+            String password = scanner.nextLine();
+            isValid = isValid(password);
+            if (!ValidationResult.isEmpty()) {
+                System.out.println(ValidationResult.toString());
+                ValidationResult.clear();
+            }
+        } while (!isValid);
+        System.out.println("Great password!");
     }
 
     //mindestens 8 Zeichen
@@ -44,7 +61,12 @@ public class Passwort {
             System.out.println("Password is empty!");
             return false;
         }
-        return password.length() >= minLength;
+        if (password.length() < minLength) {
+            ValidationResult.add(REASON_MIN_LENGTH);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     //mindestens eine Ziffer (0–9)
@@ -59,6 +81,7 @@ public class Passwort {
                 return true;
             }
         }
+        ValidationResult.add(REASON_DIGIT);
         return false;
     }
 
@@ -82,13 +105,19 @@ public class Passwort {
                 return true;
             }
         }
+        ValidationResult.add(REASON_CASE);
         return false;
     }
 
     //Häufige Passwörter
     public static boolean isCommonPassword(String password) {
         String normalizedPassword = password.trim().toLowerCase(Locale.ROOT);
-        return normalizedPassword.isEmpty() || COMMON_PASSWORDS.contains(normalizedPassword);
+        if (normalizedPassword.isEmpty() || COMMON_PASSWORDS.contains(normalizedPassword)) {
+            ValidationResult.add(REASON_NOT_COMMON);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Bonus: mindestens ein Sonderzeichen
@@ -103,13 +132,15 @@ public class Passwort {
                 return true;
             }
         }
+        ValidationResult.add(REASON_SPECIAL_CHARACTERS);
         return false;
     }
 
     // nutzt die obenstehenden Checks
     public static boolean isValid(String password) {
         return hasMinLength(password, MINIMUM_CHARACTERS) && containsDigit(password)
-                && containsUpperAndLower(password) && !isCommonPassword(password);
+                && containsUpperAndLower(password) &&
+                !isCommonPassword(password) && containsSpecialChar(password, SPECIAL_CHARACTERS);
     }
 
 }
