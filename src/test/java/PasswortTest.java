@@ -1,4 +1,4 @@
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -10,13 +10,13 @@ class PasswortTest {
     @ParameterizedTest
     @ValueSource(strings = {"Ottomotto", "12345678"})
     void hasMinLength_expectTrue(String password) {
-        assertTrue(Passwort.hasMinLength(password));
+        assertTrue(Passwort.hasMinLength(password, 8));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Otto", "1234567", ""})
     void hasMinLength_expectFalse(String password) {
-        assertFalse(Passwort.hasMinLength(password));
+        assertFalse(Passwort.hasMinLength(password, 8));
     }
 
     //mindestens eine Ziffer (0–9)(keine Ziffer, genau eine, mehrere,
@@ -62,12 +62,25 @@ class PasswortTest {
     @ParameterizedTest
     @ValueSource(strings = {"Abc1defg", "A1s2d3f4", "Abcdef1g"})
     void isValidPassword_expectTrue(String password) {
-
+        assertTrue(Passwort.isValid(password));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Abc1def", "Abcdefgh", "abcdefg1", "ABCDEFG1", "Passwort1"})
     void isValidPassword_expectFalse(String password) {
+        assertFalse(Passwort.isValid(password));
+    }
 
+    //mindestens ein Sonderzeichen
+    @ParameterizedTest
+    @ValueSource(strings = {"Abc1def1!", "Abcd_efgh", "abcd?efg1", "ABCDEFG1!?", "P_asswort1"})
+    void containsSpecialChar_expectTrue(String password) {
+        assertTrue(Passwort.containsSpecialChar(password, Passwort.SPECIAL_CHARACTERS));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Abc1def", "Abcde\nafgh", "abcdefg1", "ABCDEFG1", "Passwort1"})
+    void containsSpecialChar_expectFalse(String password) {
+        assertFalse(Passwort.containsSpecialChar(password, Passwort.SPECIAL_CHARACTERS));
     }
 }

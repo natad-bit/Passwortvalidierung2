@@ -3,12 +3,12 @@ import java.util.Set;
 
 public class Passwort {
     public static final Set<String> COMMON_PASSWORDS = Set.of(
-            "password1",
-            "password123",
-            "password1234",
-            "password2024",
-            "password2025",
-            "password2026",
+            "password1", "passwort1",
+            "password123", "passwort123",
+            "password1234", "passwort1234",
+            "password2024", "passwort2024",
+            "password2025", "passwort2025",
+            "password2026", "passwort2026",
             "pass1234",
             "qwerty1234",
             "admin123",
@@ -29,18 +29,22 @@ public class Passwort {
             "insert_your_key_1"
     );
 
+    public static final String SPECIAL_CHARACTERS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+
+    public static final int MINIMUM_CHARACTERS = 8;
+
 
     public static void main(String[] args) {
         System.out.println("Enter your passwort:");
     }
 
     //mindestens 8 Zeichen
-    public static boolean hasMinLength(String password) {
+    public static boolean hasMinLength(String password, int minLength) {
         if (password == null || password.isEmpty()) {
             System.out.println("Password is empty!");
             return false;
         }
-        return password.length() >= 8;
+        return password.length() >= minLength;
     }
 
     //mindestens eine Ziffer (0–9)
@@ -87,12 +91,24 @@ public class Passwort {
         return normalizedPassword.isEmpty() || COMMON_PASSWORDS.contains(normalizedPassword);
     }
 
-    // Bonus:
-    //public static boolean containsSpecialChar(String password, String allowed);
+    // Bonus: mindestens ein Sonderzeichen
+    public static boolean containsSpecialChar(String password, String allowed) {
+        if (password == null || password.isEmpty()) {
+            System.out.println("Password is empty!");
+            return false;
+        }
+        char[] passwordChars = password.toCharArray();
+        for (char passwordChar : passwordChars) {
+            if (allowed.contains(passwordChar + "")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // nutzt die obenstehenden Checks
     public static boolean isValid(String password) {
-        return hasMinLength(password) && containsDigit(password)
+        return hasMinLength(password, MINIMUM_CHARACTERS) && containsDigit(password)
                 && containsUpperAndLower(password) && !isCommonPassword(password);
     }
 
